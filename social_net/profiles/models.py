@@ -19,6 +19,11 @@ class Profile(models.Model):
     def __str__(self):
         return f'{self.user.username}:{self.created_at}'
 
+    def get_friends(self):
+        return self.friends.all()
+    
+    def get_friends_number(self):
+        return self.friends.all().count()
     def save(self,*args,**kwargs):
         exists=False
         if self.first_name and self.last_name:

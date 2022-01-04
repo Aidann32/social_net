@@ -1,0 +1,12 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "database": "${workspaceFolder:social_net}/social_net/db.sqlite3",
+            "name": "conn",
+            "group": "con"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}
