@@ -10,3 +10,8 @@ body {
 .mb-7 {
     margin-bottom: 7px !important;
 }
+
+.mymodal{
+    height:300px !important;
+    top:200px !important;
+}

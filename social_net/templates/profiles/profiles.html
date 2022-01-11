@@ -2,13 +2,71 @@
 
 {% block title %}Мой профиль{% endblock title %}
 {% block content %}
-<h2> Мой профиль </h2>
-<hr>
-<p>{{user_obj.first_name}}</p>
-<hr>
-<ul>
-    {% for i in user_obj.get_friends %}
-        <li>{{i}}</li>
-    {% endfor %}
-</ul>
+<div class="ui modal mymodal">
+    <i class="close icon"></i>
+    <div class="header">
+      Обновите профиль
+    </div>
+    <div class="image content">
+      <div class="ui medium image">
+        <img src="{{ user_obj.avatar_image.url }}">
+      </div>
+      <div class="description">
+        <div class="ui header">Предоставьте допольнительную информацию о Вас</div>
+        <form action="" method="post" class="ui form" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="actions">
+                <button class="ui positive right labeled icon button" type="submit">
+                  Обновить
+                  <i class="checkmark icon"></i>
+                </button>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+<div class="ui segment">
+    {% if confirm %}
+        <div class="ui green message">Изменения успешно сохранены</div>
+    {% endif %}
+    <h3>Мой профиль:{{request.user}}</h3>
+    <div class="ui grid">
+        <div class="row">
+            <div class="six wide column">
+                <img src="{{user_obj.avatar_image.url}}" alt="" class="ui medium rounded image">
+                <div class="row mt-5">
+                    <button class="ui secondary button" id='modal-btn'>Обновить профиль</button>
+                </div>
+            </div>
+            <div class="ten wide column">
+                <table class="ui table">
+                    <tbody>
+                        <tr>
+                            <td>Имя пользователя</td>
+                            <td>{{ user_obj.user }}</td>
+                        </tr>
+                        <tr>
+                            <td>Имя</td>
+                            <td>{{ user_obj.first_name }}</td>
+                        </tr>
+                        <tr>
+                            <td>Фамилия</td>
+                            <td>{{ user_obj.last_name }}</td>
+                        </tr>
+                        <tr>
+                            <td>Биография</td>
+                            <td>{{ user_obj.bio }}</td>
+                        </tr>
+                        <tr>
+                            <td>Количество друзей</td>
+                            <td>{{ user_obj.get_friends_number }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock content %}

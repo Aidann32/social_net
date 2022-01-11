@@ -24,6 +24,7 @@ class Profile(models.Model):
     
     def get_friends_number(self):
         return self.friends.all().count()
+        
     def save(self,*args,**kwargs):
         exists=False
         if self.first_name and self.last_name:
