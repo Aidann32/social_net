@@ -63,6 +63,18 @@
                             <td>Количество друзей</td>
                             <td>{{ user_obj.get_friends_number }}</td>
                         </tr>
+                        <tr>
+                            <td>Количество постов</td>
+                            <td>{{ user_obj.get_posts_number }}</td>
+                        </tr>
+                        <tr>
+                            <td>Количество поставленных лайков</td>
+                            <td>{{ user_obj.get_given_likes_number }}</td>
+                        </tr>
+                        <tr>
+                            <td>Количество полученных лайков</td>
+                            <td>{{ user_obj.get_received_likes_number }}</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
