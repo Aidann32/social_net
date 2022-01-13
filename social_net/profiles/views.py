@@ -15,4 +15,4 @@ def my_profile_view(request):
         'form':form,
         'confirm':confirm,
     }
-    return render(request,'profiles/profiles.html',context)
+    return render(request,'profiles/my_profile.html',context)

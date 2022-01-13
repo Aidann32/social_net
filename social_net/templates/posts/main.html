@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Посты{% endblock title %}
+
+{% block content %}
+    <div class="ui grid">
+        <div class="row">
+            <div class="eleven wide column">
+                {% for post in posts  %}
+                    <div class="ui fluid card">
+                        <div class="content">
+                            <p class="header">{{post.title}}</p>
+                            <p>{{post.content}}</p>
+                        </div>
+                        <div class="content">
+                            <form action="{% url 'posts:like-post-view' %}" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" value={{post.id}} name="post_id">
+                                <button type="submit" class="ui primary button">
+                                    {% if profile not in post.liked.all %}
+                                        <i class="thumbs up icon"></i>&nbsp;Нравится
+                                    {% else %}
+                                        <i class="thumbs down icon"></i>&nbsp;Не нравится                                    
+                                    {% endif %}
+                                </button>
+                                &nbsp;
+                                {{post.get_likes_number}}
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="five wide column">
+
+            </div>
+        </div>
+    </div>
+{% endblock content %}

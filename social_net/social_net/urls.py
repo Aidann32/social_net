@@ -21,7 +21,9 @@ from .views import home
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',home,name='home'),
-    path('profiles/',include('profiles.urls',namespace='profiles'))
+    path('profiles/',include('profiles.urls',namespace='profiles')),
+    path('posts/',include('posts.urls',namespace='posts')),
 ]
+
 urlpatterns+=static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
 urlpatterns+=static(settings.STATIC_URL,document_root=settings.STATIC_ROOT)
