@@ -27,11 +27,31 @@
                                 {{post.get_likes_number}}
                             </form>
                         </div>
+                        <div>
+                            {% if post.comment_set.all %}
+                                {% for comment in post.comment_set.all %}
+                                    <p>{{comment.body}}</p>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        <form action="" class="ui form" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" value="{{post.id}}" name="post_id">
+                            {{comment_form.as_p}}
+                            <button type="submit" class="ui primary button" name="submit_comment">Комментировать</button>
+                        </form>
                     </div>
                 {% endfor %}
             </div>
             <div class="five wide column">
-
+                {% if post_added %}
+                    <div class="ui green message">Пост добавлен</div>
+                {% endif %}
+                <form action="" class="ui form" enctype="multipart/form-data" method="POST">
+                    {% csrf_token %}
+                    {{post_form.as_p}}
+                    <button type="submit" class="ui button positive" name="submit_post">Поделиться записью</button>
+                </form>
             </div>
         </div>
     </div>

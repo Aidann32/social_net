@@ -31,7 +31,7 @@ class Comment(models.Model):
     created_at=models.DateField(auto_now_add=True)
 
     def __str__(self):
-        return self.pk
+        return self.body
 
 LIKE_CHOICES=(
     ('Like','Like'),
