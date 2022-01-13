@@ -2,6 +2,9 @@ from django.shortcuts import render,redirect
 from .models import Post,Like
 from profiles.models import Profile
 from .forms import PostModelForm,CommentModelForm
+from django.views.generic import UpdateView,DeleteView
+from django.urls import reverse_lazy
+from django.contrib import messages
 
 def post_comment_and_create_list_view(request):
     posts=Post.objects.all().order_by('created_at')
@@ -63,3 +66,32 @@ def like_unlike_post(request):
         post_obj.save()
         like.save()
         return redirect('posts:main-post-view')
+
+
+class PostDeleteView(DeleteView):
+    model=Post
+    template_name='posts/confirm_delete.html'
+    success_url=reverse_lazy('posts:main-post-view')
+
+    def get_object(self,*args,**kwargs):
+        pk=self.kwargs.get('pk')
+        obj=Post.objects.get(pk=pk)
+        if not obj.author.user==self.request.user:
+            messages.warning(self.request,"Чтобы удалить этот пост Вы должны являться его автором!")
+        return obj
+
+class PostUpdateView(UpdateView):
+    model=Post
+    form_class=PostModelForm
+    template_name='posts/update.html'
+    success_url=reverse_lazy('posts:main-post-view')
+    
+    def form_valid(self,form):
+        profile=Profile.objects.get(user=self.request.user)
+        if form.instance.author==profile:
+            return super().form_valid(form)
+        else:
+            form.add_error(None,"Чтобы изменить этот пост Вы должны являться его автором!")
+            return super().form_invalid(form)
+
+
