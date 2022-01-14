@@ -2,6 +2,27 @@ from django.db import models
 from django.contrib.auth.models import User
 from .utils import get_random_code
 from django.template.defaultfilters import slugify
+from django.db.models import Q
+
+class ProfileManager(models.Manager):
+    def get_all_profiles_to_invite(self,sender):
+        profiles=Profile.objects.all().exclude(user=sender)
+        profile=Profile.objects.get(user=sender)
+        qs=Relationship.objects.filter(Q(sender=profile)|Q(receiver=profile))
+
+        accepted=[]
+
+        for rel in qs:
+            if rel.status=='accepted':
+                accepted.append(rel.receiver)
+                accepted.append(rel.sender)
+
+        available=[profile for profile in profiles if profile not in accepted]
+
+        return available
+        
+    def get_all_profiles(self,me):
+        return Profile.objects.all().exclude(user=me)
 
 class Profile(models.Model):
     first_name=models.CharField(max_length=200,blank=True)
@@ -15,6 +36,8 @@ class Profile(models.Model):
     slug=models.SlugField(unique=True,blank=True)
     updated_at=models.DateField(auto_now=True)
     created_at=models.DateField(auto_now_add=True)
+
+    objects=ProfileManager()
 
     def __str__(self):
         return f'{self.user.username}:{self.created_at}'
@@ -63,12 +86,21 @@ STATUS_CHOICES=(
     ('send','send'),
     ('accepted','accepted'),
 )
+
+class RelationshipManger(models.Manager):
+
+    def invitations_received(self,receiver):
+        query_string=Relationship.objects.filter(receiver=receiver,status='send')
+        return query_string
+
 class Relationship(models.Model):
     sender=models.ForeignKey(Profile,on_delete=models.CASCADE,related_name='sender')
     receiver=models.ForeignKey(Profile,on_delete=models.CASCADE,related_name='receiver')
     status=models.CharField(max_length=8,choices=STATUS_CHOICES)
     updated_at=models.DateField(auto_now=True)
     created_at=models.DateField(auto_now_add=True)
+
+    objects=RelationshipManger()
 
     def __str__(self):
         return f'{self.sender}-{self.receiver}-{self.status}'

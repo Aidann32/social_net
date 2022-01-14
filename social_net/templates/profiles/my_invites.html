@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block title %}Заявки{% endblock title %}
+
+{% block content %}
+    <ul>
+        {% for item in qs  %}
+            <li>{{item.sender.first_name}}</li>
+        {% endfor %}
+    </ul>
+{% endblock content %}
