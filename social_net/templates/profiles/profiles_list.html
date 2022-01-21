@@ -3,9 +3,41 @@
 {% block title %}Все пользователи{% endblock title %}
 
 {% block content %}
-    <ul>
-        {% for item in qs  %}
-            <li>{{item.user}}</li>
-        {% endfor %}
-    </ul>
+   
+{% if is_empty %}
+<h2>Нету других пользователей</h2>
+{% endif %}
+{% for obj in qs %} 
+<div class="ui segment">
+    <div class="ui grid">
+        <div class="row">
+            <div class="three wide column">
+                <img src="{{obj.avatar_image.url}}" alt="" class="ui small circular image">
+            </div>
+            <div class="thirteen wide column">
+                <h3>{{obj.user}}</h3>
+                <p>{{obj.bio}}</p>
+                <button class="ui primary button">Просмотреть</button>
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="profile_pk" value="{{obj.pk}}">
+                    {% if obj.user not in rel_receiver and obj.user not in rel_sender %}
+                        <button class="ui positive basic button" type="submit"><i class="plus square icon"></i>Добавить в друзья</button>
+                    {% endif %}
+                </form>
+                {% if obj.user in rel_receiver and request.user not in obj.friends.all %}
+                    <button class="ui disabled button"><i class="user icon"></i>Заявка отправлена</button>
+                {% endif %}
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="profile_pk" value="{{obj.pk}}">
+                    {% if request.user in obj.friends.all  %}
+                        <button class="ui negative basic button" type="submit"><i class="minus square icon"></i>Удалить из друзей</button>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
 {% endblock content %}
