@@ -2,7 +2,7 @@ from django.core.files.base import File
 from django.shortcuts import render,redirect,get_object_or_404
 from .models import Profile,Relationship
 from .forms import ProfileModelForm
-from django.views.generic import ListView
+from django.views.generic import ListView,DetailView
 from django.contrib.auth.models import User
 from django.db.models import Q
 
@@ -43,6 +43,34 @@ def profile_list_view(request):
     qs=Profile.objects.get_all_profiles(user)
     context={'qs':qs,}
     return render(request,'profiles/profiles_list.html',context)
+
+class ProfileDetailView(DetailView):
+    model=Profile
+    template_name='profiles/details.html'
+
+    def get_object(self):
+        slug=self.kwargs.get('slug')
+        profile=Profile.objects.get(slug=slug)
+        return profile
+
+    def get_context_data(self,*args,**kwargs):
+        context=super().get_context_data(**kwargs)
+        user=User.objects.get(username__iexact=self.request.user)
+        profile=Profile.objects.get(user=user)
+        context['profile']=profile
+        receiver=Relationship.objects.filter(sender=profile)
+        sender=Relationship.objects.filter(receiver=profile)
+        rel_receiver=[]
+        rel_sender=[]
+        for item in receiver:
+            rel_receiver.append(item.receiver.user)
+        for item in sender:
+            rel_sender.append(item.sender.user)
+        context['rel_receiver']=rel_receiver
+        context['rel_sender']=rel_sender
+        context['posts']=self.get_object().get_all_author_post()
+        context['len_posts']=True if len(self.get_object().get_all_author_post())>0 else False
+        return context
 
 class ProfileListView(ListView):
     model=Profile
