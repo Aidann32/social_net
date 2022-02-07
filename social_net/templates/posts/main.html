@@ -43,28 +43,28 @@
 
                     <!-- Форма для лайка -->
                     <div class="right floated">
-                        <form action="{% url 'posts:like-post-view' %}" method="POST">
+                        <form action="{% url 'posts:like-post-view' %}" method="POST" class="like-form" id="{{obj.id}}">
                             {% csrf_token %}
                             <input type="hidden" name="post_id" value={{obj.id}}>
                             {% if profile not in obj.liked.all %}
-                                <button type="submit" class="ui bwhite-sm button"><i class="thumbs up icon"></i>
+                                <button type="submit" class="ui bwhite-sm button like-btn{{obj.id}}"><i class="thumbs up icon"></i>
                                 </button>
                                 {% if obj.get_likes_number == 1 %}
-                                    <span> {{obj.get_likes_number}} лайк</span>
+                                    <span class="like-count{{obj.id}}"> {{obj.get_likes_number}}</span> лайк
                                 {% elif obj.get_likes_number == 2 or obj.get_likes_number == 3 or obj.get_likes_number == 4 %}
-                                    <span> {{obj.get_likes_number}} лайка</span>
+                                    <span class="like-count{{obj.id}}"> {{obj.get_likes_number}}</span> лайка
                                 {% else %}
-                                    <span> {{obj.get_likes_number}} лайков</span>
+                                    <span class="like-count{{obj.id}}"> {{obj.get_likes_number}}</span> лайков
                                 {% endif %}
                             {% else %}
-                                <button type="submit" class="ui bwhite-sm button"><i class="thumbs down icon"></i>
+                                <button type="submit" class="ui bwhite-sm button like-btn{{obj.id}}"><i class="thumbs down icon"></i>
                                 </button>
                                 {% if obj.get_likes_number == 1 %}
-                                    <span> {{obj.get_likes_number}} лайк</span>
+                                    <span class="like-count{{obj.id}}"> {{obj.get_likes_number}}</span> лайк
                                 {% elif obj.get_likes_number == 2 or obj.get_likes_number == 3 or obj.get_likes_number == 4 %}
-                                    <span> {{obj.get_likes_number}} лайка</span>
+                                    <span class="like-count{{obj.id}}"> {{obj.get_likes_number}}</span> лайка
                                 {% else %}
-                                    <span> {{obj.get_likes_number}} лайков</span>
+                                    <span class="like-count{{obj.id}}"> {{obj.get_likes_number}}</span> лайков
                                 {% endif %}
                             {% endif %}
                         </form>
@@ -139,6 +139,40 @@
                     $(this).next(".comment-box").hide("slow");
                     display=false
                 }  
+            });
+
+            $(".like-form").submit(function(e){
+                e.preventDefault();
+                const post_id=$(this).attr("id");
+                const like_class=$(`.like-btn${post_id}`).children().attr("class");
+                const url=$(this).attr("action");
+                const likes_num=parseInt($(`.like-count${post_id}`).text());
+                let res;
+                $.ajax({
+                    type:"POST",
+                    url:url,
+                    data:{
+                        'csrfmiddlewaretoken':$('input[name="csrfmiddlewaretoken"]').val(),
+                        'post_id':post_id,
+                    },
+                    success:function(response){
+                        if(like_class==='thumbs up icon'){
+                            $(`.like-btn${post_id}`).children().removeClass('up');
+                            $(`.like-btn${post_id}`).children().toggleClass('down')
+                            res=likes_num+1;
+                            $(`.like-count${post_id}`).text(res);
+                        }
+                        else{
+                            $(`.like-btn${post_id}`).children().removeClass('down');
+                            $(`.like-btn${post_id}`).children().toggleClass('up')
+                            res=likes_num-1;
+                            $(`.like-count${post_id}`).text(res);
+                        }
+                    },
+                    error:function(jqXHR, textStatus, errorThrown){
+                        console.log(textStatus, errorThrown);
+                    }
+                })
             });
         });
     </script>

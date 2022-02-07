@@ -5,6 +5,7 @@ from .forms import PostModelForm,CommentModelForm
 from django.views.generic import UpdateView,DeleteView
 from django.urls import reverse_lazy
 from django.contrib import messages
+from django.http import JsonResponse
 
 def post_comment_and_create_list_view(request):
     posts=Post.objects.all().order_by('created_at')
@@ -63,9 +64,15 @@ def like_unlike_post(request):
                 like.value='Like'
         else:
             like.value='Like'
-        post_obj.save()
-        like.save()
-        return redirect('posts:main-post-view')
+            post_obj.save()
+            like.save()
+        
+        data={
+            'value': like.value,
+            'likes':post_obj.liked.all().count()
+        }
+        return JsonResponse(data,safe=False)
+    return redirect('posts:main-post-view')
 
 
 class PostDeleteView(DeleteView):
