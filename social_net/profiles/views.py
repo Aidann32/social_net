@@ -5,7 +5,9 @@ from .forms import ProfileModelForm
 from django.views.generic import ListView,DetailView
 from django.contrib.auth.models import User
 from django.db.models import Q
-
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+@login_required
 def my_profile_view(request):
     user_obj=Profile.objects.get(user=request.user)
     form=ProfileModelForm(request.POST or None,request.FILES or None,instance=user_obj)
@@ -21,6 +23,7 @@ def my_profile_view(request):
     }
     return render(request,'profiles/my_profile.html',context)
 
+@login_required
 def invites_received_view(request):
     user_obj=Profile.objects.get(user=request.user)
     qs=Relationship.objects.invitations_received(receiver=user_obj)
@@ -32,19 +35,21 @@ def invites_received_view(request):
     context={'qs':results,'is_empty':is_empty,}
     return render(request,'profiles/my_invites.html',context)
 
+@login_required
 def invite_profile_list_view(request):
     user=request.user
     qs=Profile.objects.get_all_profiles_to_invite(user)
     context={'qs':qs,}
     return render(request,'profiles/to_invite_list.html',context)
 
+@login_required
 def profile_list_view(request):
     user=request.user
     qs=Profile.objects.get_all_profiles(user)
     context={'qs':qs,}
     return render(request,'profiles/profiles_list.html',context)
 
-class ProfileDetailView(DetailView):
+class ProfileDetailView(LoginRequiredMixin,DetailView):
     model=Profile
     template_name='profiles/details.html'
 
@@ -72,7 +77,7 @@ class ProfileDetailView(DetailView):
         context['len_posts']=True if len(self.get_object().get_all_author_post())>0 else False
         return context
 
-class ProfileListView(ListView):
+class ProfileListView(LoginRequiredMixin,ListView):
     model=Profile
     template_name='profiles/profiles_list.html'
     context_object_name='qs'
@@ -101,6 +106,7 @@ class ProfileListView(ListView):
             context['is_empty']=True
         return context
 
+@login_required
 def send_invitation(request):
     if request.method == 'POST':
         pk=request.POST.get('profile_pk')
@@ -112,6 +118,7 @@ def send_invitation(request):
         return redirect(request.META.get('HTTP_REFERER'))
     return redirect('profiles:myprofile')
 
+@login_required
 def remove_from_friends(request):
     if request.method=='POST':
         pk=request.POST.get('profile_pk')
@@ -126,6 +133,7 @@ def remove_from_friends(request):
 
     return redirect('profiles:myprofile')
 
+@login_required
 def accept_invitation(request):
     if request.method == 'POST':
         pk=request.POST.get('profile_pk')
@@ -137,6 +145,7 @@ def accept_invitation(request):
             rel.save()
     return redirect('profiles:invites-received-view')
 
+@login_required
 def reject_invitation(request):
     if request.method == 'POST':
         pk=request.POST.get('profile_pk')
