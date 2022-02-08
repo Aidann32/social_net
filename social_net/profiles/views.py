@@ -7,6 +7,8 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+
+
 @login_required
 def my_profile_view(request):
     user_obj=Profile.objects.get(user=request.user)
@@ -154,3 +156,24 @@ def reject_invitation(request):
         rel=get_object_or_404(Relationship,sender=sender,receiver=receiver)
         rel.delete()
     return redirect('profiles:invites-received-view')
+
+@login_required
+def friend_search_view(request):
+    friend_username=request.GET.get('q')
+    context={
+        'is_own':False,
+        'not_exists':False,
+    }
+    if friend_username==request.user.username:
+        context['is_own']=True
+        return render(request,'profiles/search_friend.html',context)
+    else:
+        try:
+            friend_user=User.objects.get(username=friend_username)
+            friend_profile=Profile.objects.get(user=friend_user)
+            context['friend_profile']=friend_profile
+            return render(request,'profiles/search_friend.html',context)
+        except User.DoesNotExist:
+            context['not_exists']=True
+            return render(request,'profiles/search_friend.html',context)
+            

@@ -1,9 +1,17 @@
 {% extends 'base.html' %}
 
-{% block title %}Киньте заявку{% endblock title %}
+{% block title %}Результаты поиска{% endblock title %}
 
 {% block content %}
-    {% for obj in qs %}
+
+    {% if is_own or not_exists %}
+        {% if is_own %} 
+        <h2>Нельзя вводить свое имя</h2>
+        {% endif %}
+        {% if not_exists %}
+        <h2>Друга с таким логином не существует</h2>
+        {% endif %}
+    {% else %}
         <div class="ui segment">
             <div class="ui grid">
                 <div class="row">
@@ -36,5 +44,5 @@
                 </div>
             </div>
         </div>
-    {% endfor %}
+        {% endif %}
 {% endblock content %}

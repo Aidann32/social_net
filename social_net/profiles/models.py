@@ -9,18 +9,22 @@ class ProfileManager(models.Manager):
     def get_all_profiles_to_invite(self,sender):
         profiles=Profile.objects.all().exclude(user=sender)
         profile=Profile.objects.get(user=sender)
+        checking_user=sender
         qs=Relationship.objects.filter(Q(sender=profile)|Q(receiver=profile))
-
         accepted=[]
 
         for rel in qs:
             if rel.status=='accepted':
-                accepted.append(rel.receiver)
-                accepted.append(rel.sender)
+                print(type(rel.receiver))
+                print(rel.sender)
+                if rel.sender==profile:
+                    accepted.append(rel.receiver)
+                elif rel.receiver==profile:
+                    accepted.append(rel.sender)
 
-        available=[profile for profile in profiles if profile not in accepted]
-
-        return available
+        print(type(sender))
+        print(accepted)
+        return accepted
         
     def get_all_profiles(self,me):
         return Profile.objects.all().exclude(user=me)

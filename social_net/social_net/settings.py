@@ -16,7 +16,12 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-LOGIN_URL ='/admin/'
+# LOGIN_URL ='/admin/'
+LOGIN_REDIRECT_URL = '/posts'
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_REQUIRED=True
+ACCOUNT_EMAIL_UNIQUE=True
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
@@ -26,6 +31,9 @@ SECRET_KEY = 'django-insecure-gy^i$7@gph6pidqug5&v=1%7l6tk8d8^bh+jb8$y51snau^ftp
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+if DEBUG:
+    EMAIL_BACKEND='django.core.mail.backends.dummy.EmailBackend'
+    
 ALLOWED_HOSTS = []
 
 
@@ -41,7 +49,14 @@ INSTALLED_APPS = [
     
     'posts',
     'profiles',
+
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
 ]
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -66,9 +81,16 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'profiles.context_processors.profile_pic',
+                'profiles.context_processors.invitations_number',
             ],
         },
     },
+]
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 WSGI_APPLICATION = 'social_net.wsgi.application'

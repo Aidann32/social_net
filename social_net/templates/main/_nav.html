@@ -24,30 +24,34 @@
                           Все пользователи
                       </a>
                       <a href="{{path_to_invite}}" class="item">
-                          Отправленные запросы
+                          Мои друзья
                       </a>
                       <a href="{{path_to_received_invites}}" class="item">
-                          Ожидающие запросы
+                          Ожидающие запросы &nbsp; <div class="ui purple  horizontal label">{{invites_num}}</div>
                       </a>
                   </div>
                </div>
           </div>
                <div class="item">
-                <form action="" method="GET">
+                <form action="{% url 'profiles:friend-search' %}" method="GET">
                   <div class="ui action left icon input">
-                  <input class="prompt" type="text" name='q' placeholder="Введите имя друга">
+                  <input class="prompt" type="text" name='q' placeholder="Введите логин друга">
                   <i class="search icon"></i>
                   <button type='submit' class="ui button">Искать</button>
                   </div>
               </form>
               </div>
           
-              <a href="{{path_to_my_profile}}" class="item">{{ request.user }}</a>
+              <a href="{{path_to_my_profile}}" class="item">
+                  <img src="{{avatar_pic.url}}" alt="" class="avatar ui image">&nbsp;
+                  {{ request.user }}
+              </a>
   
-              <a href="" class="ui item">Выйти</a>
+              <a href="{% url 'account_logout' %}" class="ui item">Выйти</a>
 
           {% else %}
-          <a href="" class="ui item">Войти</a>
+          <a href="{% url 'account_login' %}" class="ui item">Войти</a>
+          <a href="{% url 'account_signup' %}" class="ui item">Зарегистрироваться</a>
           {% endif %}
       </div>
     </div>
