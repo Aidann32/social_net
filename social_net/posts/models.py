@@ -3,10 +3,10 @@ from django.core.validators import FileExtensionValidator
 from profiles.models import Profile
 
 class Post(models.Model):
-    title=models.CharField(max_length=300)
+    title=models.CharField(max_length=300,verbose_name='Заголовок')
     author=models.ForeignKey(Profile,on_delete=models.CASCADE,related_name='posts')
-    content=models.TextField()
-    image=models.ImageField(upload_to='posts/',validators=[FileExtensionValidator(['img','png','jpeg'])],blank=True)
+    content=models.TextField(verbose_name='Текст')
+    image=models.ImageField(upload_to='posts/',validators=[FileExtensionValidator(['img','png','jpeg'])],blank=True,verbose_name='Картинка')
     liked=models.ManyToManyField(Profile,blank=True,related_name='likes')
     updated_at=models.DateField(auto_now=True)
     created_at=models.DateField(auto_now_add=True)

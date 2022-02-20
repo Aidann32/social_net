@@ -171,7 +171,8 @@ def friend_search_view(request):
         try:
             friend_user=User.objects.get(username=friend_username)
             friend_profile=Profile.objects.get(user=friend_user)
-            context['friend_profile']=friend_profile
+            context['obj']=friend_profile
+            print(friend_profile.user.username)
             return render(request,'profiles/search_friend.html',context)
         except User.DoesNotExist:
             context['not_exists']=True

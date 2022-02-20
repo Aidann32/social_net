@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     
     'posts',
     'profiles',
+    'prediction_system',
 
     'django.contrib.sites',
     'allauth',
