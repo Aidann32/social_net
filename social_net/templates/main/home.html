@@ -1,5 +1,18 @@
 {% extends 'base.html' %}
 {% block title %}Домашняя страница{% endblock title %}
 {% block content %}
-<h2>Hello world!</h2>
+    <!--Page Contents-->
+<div class="pusher">
+    <div class="ui  vertical masthead center aligned segment">
+        <div class="ui text container">
+            <h1 class="ui header">Добро пожаловать к нам!</h1>
+            <h2>Общайся, делись новостями</h2>
+            <a href="{% if request.user.is_authenticated %}{% url 'posts:main-post-view' %}{% else %} {% url 'account_signup' %}{% endif %}">
+                <div class="ui huge primary button">
+                Поехали! <i class="right arrow icon"></i>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
 {% endblock content %}

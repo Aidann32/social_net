@@ -13,3 +13,5 @@ def invitations_number(request):
         return {'invites_num':qs_counter,}
     return {}
 
+    
+

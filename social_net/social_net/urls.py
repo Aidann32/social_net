@@ -18,12 +18,15 @@ from django.urls import path,include
 from django.conf import settings
 from django.conf.urls.static import static
 from .views import home
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',home,name='home'),
     path('profiles/',include('profiles.urls',namespace='profiles')),
     path('posts/',include('posts.urls',namespace='posts')),
     path('accounts/', include('allauth.urls')),
+    path('prediction/', include('prediction_system.urls')),
 ]
 
 urlpatterns+=static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

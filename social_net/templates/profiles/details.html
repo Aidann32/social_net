@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="ui grid">
+    <div class="ui grid stackable">
         <div class="row">
             <div class="four wide column">
                 <img src="{{object.avatar_image.url}}" alt="" class="ui medium rounded image">
@@ -49,10 +49,81 @@
             </div>
             <div class="twelve wide column">
                 {% if len_posts %}
-                    {% for post in posts %}
-                    <div class="ui segment fluid">
-                        {{post.content}}
+                    {% for obj in posts %}
+                    <div class="ui fluid card mb-5">
+                    <div class="content">
+                        <p class="header">{{obj.title}}</p>
+                        <p> {{ obj.content }} </p>
+    
+                        <!-- Форма для лайка -->
+                        <div class="right floated">
+                            <form action="{% url 'posts:like-post-view' %}" method="POST" class="like-form" id="{{obj.id}}">
+                                {% csrf_token %}
+                                <input type="hidden" name="post_id" value={{obj.id}}>
+                                {% if profile not in obj.liked.all %}
+                                    <button type="submit" class="ui bwhite-sm button like-btn{{obj.id}}"><i class="thumbs up icon"></i>
+                                    </button>
+                                    {% if obj.get_likes_number == 1 %}
+                                        <span class="like-count{{obj.id}}"> {{obj.get_likes_number}}</span> лайк
+                                    {% elif obj.get_likes_number == 2 or obj.get_likes_number == 3 or obj.get_likes_number == 4 %}
+                                        <span class="like-count{{obj.id}}"> {{obj.get_likes_number}}</span> лайка
+                                    {% else %}
+                                        <span class="like-count{{obj.id}}"> {{obj.get_likes_number}}</span> лайков
+                                    {% endif %}
+                                {% else %}
+                                    <button type="submit" class="ui bwhite-sm button like-btn{{obj.id}}"><i class="thumbs down icon"></i>
+                                    </button>
+                                    {% if obj.get_likes_number == 1 %}
+                                        <span class="like-count{{obj.id}}"> {{obj.get_likes_number}}</span> лайк
+                                    {% elif obj.get_likes_number == 2 or obj.get_likes_number == 3 or obj.get_likes_number == 4 %}
+                                        <span class="like-count{{obj.id}}"> {{obj.get_likes_number}}</span> лайка
+                                    {% else %}
+                                        <span class="like-count{{obj.id}}"> {{obj.get_likes_number}}</span> лайков
+                                    {% endif %}
+                                {% endif %}
+                            </form>
+                        </div>
+                        
+                        <!--Кол-во комментариев -->
+                        {% if obj.get_comment_number == 1 %}
+                            <i class="comment icon"></i>
+                            <span> {{ obj.get_comment_number }} комментарий</span>
+                        {% elif obj.get_comment_number == 2 or obj.get_comment_number == 3 or obj.get_comment_number == 4%}
+                            <i class="comment icon"></i>
+                            <span> {{ obj.get_comment_number }} комментария</span>
+                        {% else %}
+                            <i class="comment icon"></i>
+                            <span> {{ obj.get_comment_number }} комментариев</span>
+                        {% endif %}
                     </div>
+    
+                    <div class="extra content">
+                            <div class="mb-5"></div>
+                            {% if obj.comment_set.all %}
+                                <button class="cmt_btn ui button mb-5">Показать / скрыть комментарии</button>
+                            {% endif %}
+                            <div class="comment-box">
+                            {% if obj.comment_set.all %}
+                                {% for c in obj.comment_set.all %}
+                                
+                                    <div class="ui segment mb-5">
+                                        <img class="ui avatar image" src={{c.user.avatar_image.url}}>
+                                        <span>{{ c.user }}</span>
+                                        <div class='mt-5'>{{ c.body }}</div>
+                                    </div>
+                                
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+        
+                        <form action="{% url 'posts:main-post-view' %}" method="POST"class='ui fluid form'>
+                            {% csrf_token %}
+                            <input type="hidden" name="post_id" value={{obj.id}}>
+                            {{ comment_form }}
+                            <button type="submit" name="submit_comment" class="ui green button mt-5 w-full">Комментировать</button>
+                        </form>
+                    </div>
+                </div>
                     {% endfor %}
                 {% else %}
                     <h2>Пользователь не писал посты</h2>
@@ -61,3 +132,54 @@
         </div>
     </div>
 {% endblock %}
+
+{% block scripts %} 
+    <script>
+        $( document ).ready(function() {
+            let display = true;
+            $(".cmt_btn").click(function () {
+                if (display===false) {
+                    $(this).next(".comment-box").show("slow");
+                    display=true
+                } else {
+                    $(this).next(".comment-box").hide("slow");
+                    display=false
+                }  
+            });
+
+            $(".like-form").submit(function(e){
+                e.preventDefault();
+                const post_id=$(this).attr("id");
+                const like_class=$(`.like-btn${post_id}`).children().attr("class");
+                const url=$(this).attr("action");
+                const likes_num=parseInt($(`.like-count${post_id}`).text());
+                let res;
+                $.ajax({
+                    type:"POST",
+                    url:url,
+                    data:{
+                        'csrfmiddlewaretoken':$('input[name="csrfmiddlewaretoken"]').val(),
+                        'post_id':post_id,
+                    },
+                    success:function(response){
+                        if(like_class==='thumbs up icon'){
+                            $(`.like-btn${post_id}`).children().removeClass('up');
+                            $(`.like-btn${post_id}`).children().toggleClass('down')
+                            res=likes_num+1;
+                            $(`.like-count${post_id}`).text(res);
+                        }
+                        else{
+                            $(`.like-btn${post_id}`).children().removeClass('down');
+                            $(`.like-btn${post_id}`).children().toggleClass('up')
+                            res=likes_num-1;
+                            $(`.like-count${post_id}`).text(res);
+                        }
+                    },
+                    error:function(jqXHR, textStatus, errorThrown){
+                        console.log(textStatus, errorThrown);
+                    }
+                })
+            });
+        });
+    </script>
+{% endblock scripts %}

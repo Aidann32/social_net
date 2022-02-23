@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseRedirect
 
 @login_required 
 def post_comment_and_create_list_view(request):
@@ -37,6 +38,8 @@ def post_comment_and_create_list_view(request):
                 instance.post=Post.objects.get(id=request.POST.get('post_id'))
                 instance.save()
                 comment_form=CommentModelForm()
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
 
     context={
         'posts':posts,

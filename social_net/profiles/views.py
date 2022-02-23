@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from posts.forms import CommentModelForm
 
 
 @login_required
@@ -76,6 +77,7 @@ class ProfileDetailView(LoginRequiredMixin,DetailView):
         context['rel_receiver']=rel_receiver
         context['rel_sender']=rel_sender
         context['posts']=self.get_object().get_all_author_post()
+        context['comment_form']=CommentModelForm()
         context['len_posts']=True if len(self.get_object().get_all_author_post())>0 else False
         return context
 
@@ -171,7 +173,8 @@ def friend_search_view(request):
         try:
             friend_user=User.objects.get(username=friend_username)
             friend_profile=Profile.objects.get(user=friend_user)
-            context['friend_profile']=friend_profile
+            context['obj']=friend_profile
+            print(friend_profile.user.username)
             return render(request,'profiles/search_friend.html',context)
         except User.DoesNotExist:
             context['not_exists']=True
