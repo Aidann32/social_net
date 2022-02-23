@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import ProfileData
 
-# Register your models here.
+@admin.register(ProfileData)
+class ProfileDataAdmin(admin.ModelAdmin):
+    list_display=('profile','prediction',)

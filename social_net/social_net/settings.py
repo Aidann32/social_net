@@ -55,6 +55,9 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+
+    'crispy_forms',
+    'crispy_forms_semantic_ui',
 ]
 
 SITE_ID = 1
@@ -84,6 +87,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'profiles.context_processors.profile_pic',
                 'profiles.context_processors.invitations_number',
+                'prediction_system.context_processors.has_prediction',
             ],
         },
     },
@@ -96,6 +100,8 @@ AUTHENTICATION_BACKENDS = [
 
 WSGI_APPLICATION = 'social_net.wsgi.application'
 
+CRISPY_TEMPLATE_PACK='semantic-ui'
+CRISPY_ALLOWED_TEMPLATE_PACKS = ('semantic-ui')
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases

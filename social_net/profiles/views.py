@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from posts.forms import CommentModelForm
 
 
 @login_required
@@ -76,6 +77,7 @@ class ProfileDetailView(LoginRequiredMixin,DetailView):
         context['rel_receiver']=rel_receiver
         context['rel_sender']=rel_sender
         context['posts']=self.get_object().get_all_author_post()
+        context['comment_form']=CommentModelForm()
         context['len_posts']=True if len(self.get_object().get_all_author_post())>0 else False
         return context
 

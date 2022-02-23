@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+  {% if prediction == "['Academics']" %}
+  <div class="ui header">Академические дисциплины</div>
+  <div class="ui segment">
+      <p>Вам нужно изучать академические дисциплины</p>
+  </div>
+  {% elif prediction == "['Sports']" %}
+  <div class="ui header">Спорт</div>
+  <div class="ui segment">
+    <p>Вам нужно развиваться в спорте</p>
+  </div>
+  {% elif prediction == "['Arts']" %}
+  <div class="ui header">Искусство</div>
+  <div class="ui segment">
+    <p>Вам нужно заниматься искусством</p>
+  </div>
+  {% endif %}
+{% endblock %}

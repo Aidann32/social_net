@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Машинное обучение{% endblock title %}
+
+{% block content %}
+<form action="" method="POST" class="ui form">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button type="submit" class="ui green button mt-5 w-full">Определить</button></form>
+{% endblock content %}

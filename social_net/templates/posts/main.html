@@ -5,7 +5,7 @@
 {% block title %}Главная страница{% endblock title %}
 
 {% block content %}
-<div class="ui grid">
+<div class="ui grid stackable">
     <div class="eleven wide column">
         <!-- Все посты -->
         {% for obj in posts %}
@@ -106,7 +106,7 @@
                         {% csrf_token %}
                         <input type="hidden" name="post_id" value={{obj.id}}>
                         {{ comment_form }}
-                        <button type="submit" name="submit_comment" class="ui primary button mt-5 w-full">Комментировать</button>
+                        <button type="submit" name="submit_comment" class="ui green button mt-5 w-full">Комментировать</button>
                     </form>
                 </div>
             </div>
