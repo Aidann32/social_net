@@ -62,3 +62,7 @@ class ProfileData(models.Model):
             self.sport_medals,self.sport_career,self.sport_active,self.fantastic_arts,
             self.won_arts,self.time_art,]])
         super(ProfileData,self).save(*args,**kwargs)
+    
+    class Meta:
+        verbose_name = 'Данные пользователей'
+        verbose_name_plural = 'Данные пользователей'

@@ -21,6 +21,7 @@ from .views import home
 
 
 urlpatterns = [
+    path('grappelli/', include('grappelli.urls')),
     path('admin/', admin.site.urls),
     path('',home,name='home'),
     path('profiles/',include('profiles.urls',namespace='profiles')),

@@ -9,7 +9,7 @@ from django.http import Http404
 def index(request):
     profile=Profile.objects.get(user=request.user)
     if ProfileData.objects.filter(profile=profile).exists():
-        raise Http404
+        ProfileData.objects.filter(profile=profile).delete()
     form=ProfileDataForm()
     if request.method == 'POST':
         form=ProfileDataForm(request.POST or None)

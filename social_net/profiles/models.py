@@ -100,6 +100,10 @@ class Profile(models.Model):
         self.slug=to_slug
         super().save(*args,**kwargs)
 
+    class Meta:
+        verbose_name = 'Профиль'
+        verbose_name_plural = 'Профили'
+
 STATUS_CHOICES=(
     ('send','send'),
     ('accepted','accepted'),
@@ -122,3 +126,7 @@ class Relationship(models.Model):
 
     def __str__(self):
         return f'{self.sender}-{self.receiver}-{self.status}'
+
+    class Meta:
+        verbose_name = 'Отношение'
+        verbose_name_plural = 'Отношения'

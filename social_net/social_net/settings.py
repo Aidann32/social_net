@@ -32,14 +32,15 @@ SECRET_KEY = 'django-insecure-gy^i$7@gph6pidqug5&v=1%7l6tk8d8^bh+jb8$y51snau^ftp
 DEBUG = True
 
 if DEBUG:
-    EMAIL_BACKEND='django.core.mail.backends.dummy.EmailBackend'
+    EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
     
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', ]
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -138,12 +139,11 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'ru'
 
-TIME_ZONE = 'Etc/GMT+5'
+TIME_ZONE = 'Asia/yekaterinburg'
 
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
